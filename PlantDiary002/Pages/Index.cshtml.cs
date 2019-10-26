@@ -19,7 +19,10 @@ namespace PlantDiary002.Pages
 
         public void OnGet()
         {
-
+            string myName = "Siddharth N M";
+            int age = 25;
+            ViewData["MyName"] = myName;
+            ViewData["age"] = age;
         }
     }
 }
