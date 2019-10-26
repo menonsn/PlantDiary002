@@ -34,12 +34,14 @@ namespace PlantDiary002.Pages
                 //Marshall the data into a series of objects.
                 QuickType.Welcome welcome = QuickType.Welcome.FromJson(jsonData);             
                 //get the list(collection) of specimens
-                List<QuickType.Specimen> allSpecimens  welcome.Specimens;
+                List<QuickType.Plant> allPlants = welcome.Plants;
+                //display specimen data
+                ViewData["allPlants"] = allPlants;
                 //iterate over the specimens so we can shake hands with them.
-                foreach(QuickType.Speciemn specimen in allSpecimens)
+                foreach (QuickType.Plant plant in allPlants)
                 {
                     //shake hands with one specimen at a time.
-                    Console.WriteLine(specimen);
+                    Console.WriteLine(plant);
                 }
             }
         }

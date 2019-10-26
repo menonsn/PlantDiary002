@@ -18,7 +18,7 @@ namespace QuickType
     public partial class Welcome
     {
         [JsonProperty("plants")]
-        public Plant[] Plants { get; set; }
+        public List<Plant> Plants { get; set; }
     }
 
     public partial class Plant
