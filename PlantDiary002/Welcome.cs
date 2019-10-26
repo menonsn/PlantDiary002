@@ -17,69 +17,37 @@ namespace QuickType
 
     public partial class Welcome
     {
-        [JsonProperty("fiscal_year")]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long FiscalYear { get; set; }
-
-        [JsonProperty("acct_period")]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long AcctPeriod { get; set; }
-
-        [JsonProperty("dept_code")]
-        public string DeptCode { get; set; }
-
-        [JsonProperty("dept_desc")]
-        public string DeptDesc { get; set; }
-
-        [JsonProperty("fund_code")]
-        public string FundCode { get; set; }
-
-        [JsonProperty("fund_desc")]
-        public string FundDesc { get; set; }
-
-        [JsonProperty("exp_acct_cat")]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long ExpAcctCat { get; set; }
-
-        [JsonProperty("exp_acct_cat_desc")]
-        public string ExpAcctCatDesc { get; set; }
-
-        [JsonProperty("exp_acct_sub_no", NullValueHandling = NullValueHandling.Ignore)]
-        public string ExpAcctSubNo { get; set; }
-
-        [JsonProperty("exp_acct_sub_desc", NullValueHandling = NullValueHandling.Ignore)]
-        public ExpAcctSubDesc? ExpAcctSubDesc { get; set; }
-
-        [JsonProperty("trans_id")]
-        public string TransId { get; set; }
-
-        [JsonProperty("trans_line_no")]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long TransLineNo { get; set; }
-
-        [JsonProperty("record_date")]
-        public DateTimeOffset RecordDate { get; set; }
-
-        [JsonProperty("check_no")]
-        public string CheckNo { get; set; }
-
-        [JsonProperty("amount")]
-        public string Amount { get; set; }
-
-        [JsonProperty("vendor_name")]
-        public string VendorName { get; set; }
+        [JsonProperty("plants")]
+        public Plant[] Plants { get; set; }
     }
 
-    public enum ExpAcctSubDesc { AgencySpecific, Design, GeotechMaterialTesting, PreliminarySurvey };
+    public partial class Plant
+    {
+        [JsonProperty("id")]
+        [JsonConverter(typeof(ParseStringConverter))]
+        public long Id { get; set; }
+
+        [JsonProperty("genus")]
+        public string Genus { get; set; }
+
+        [JsonProperty("species")]
+        public string Species { get; set; }
+
+        [JsonProperty("cultivar")]
+        public string Cultivar { get; set; }
+
+        [JsonProperty("common")]
+        public string Common { get; set; }
+    }
 
     public partial class Welcome
     {
-        public static Welcome[] FromJson(string json) => JsonConvert.DeserializeObject<Welcome[]>(json, QuickType.Converter.Settings);
+        public static Welcome FromJson(string json) => JsonConvert.DeserializeObject<Welcome>(json, QuickType.Converter.Settings);
     }
 
     public static class Serialize
     {
-        public static string ToJson(this Welcome[] self) => JsonConvert.SerializeObject(self, QuickType.Converter.Settings);
+        public static string ToJson(this Welcome self) => JsonConvert.SerializeObject(self, QuickType.Converter.Settings);
     }
 
     internal static class Converter
@@ -90,7 +58,6 @@ namespace QuickType
             DateParseHandling = DateParseHandling.None,
             Converters =
             {
-                ExpAcctSubDescConverter.Singleton,
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
             },
         };
@@ -125,56 +92,5 @@ namespace QuickType
         }
 
         public static readonly ParseStringConverter Singleton = new ParseStringConverter();
-    }
-
-    internal class ExpAcctSubDescConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(ExpAcctSubDesc) || t == typeof(ExpAcctSubDesc?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            switch (value)
-            {
-                case "AGENCY SPECIFIC":
-                    return ExpAcctSubDesc.AgencySpecific;
-                case "Design":
-                    return ExpAcctSubDesc.Design;
-                case "Geotech/Material Testing":
-                    return ExpAcctSubDesc.GeotechMaterialTesting;
-                case "Preliminary Survey":
-                    return ExpAcctSubDesc.PreliminarySurvey;
-            }
-            throw new Exception("Cannot unmarshal type ExpAcctSubDesc");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (ExpAcctSubDesc)untypedValue;
-            switch (value)
-            {
-                case ExpAcctSubDesc.AgencySpecific:
-                    serializer.Serialize(writer, "AGENCY SPECIFIC");
-                    return;
-                case ExpAcctSubDesc.Design:
-                    serializer.Serialize(writer, "Design");
-                    return;
-                case ExpAcctSubDesc.GeotechMaterialTesting:
-                    serializer.Serialize(writer, "Geotech/Material Testing");
-                    return;
-                case ExpAcctSubDesc.PreliminarySurvey:
-                    serializer.Serialize(writer, "Preliminary Survey");
-                    return;
-            }
-            throw new Exception("Cannot marshal type ExpAcctSubDesc");
-        }
-
-        public static readonly ExpAcctSubDescConverter Singleton = new ExpAcctSubDescConverter();
     }
 }
