@@ -17,15 +17,26 @@ namespace QuickType
 
     public partial class Welcome
     {
-        [JsonProperty("plants")]
-        public List<Plant> Plants { get; set; }
+        [JsonProperty("specimens")]
+        public List<Specimen> Specimens { get; set; }
     }
 
-    public partial class Plant
+    public partial class Specimen
     {
-        [JsonProperty("id")]
-        [JsonConverter(typeof(ParseStringConverter))]
-        public long Id { get; set; }
+        [JsonProperty("lat")]
+        public double Lat { get; set; }
+
+        [JsonProperty("lng")]
+        public double Lng { get; set; }
+
+        [JsonProperty("plant_id")]
+        public long PlantId { get; set; }
+
+        [JsonProperty("specimen_id")]
+        public long SpecimenId { get; set; }
+
+        [JsonProperty("common")]
+        public string Common { get; set; }
 
         [JsonProperty("genus")]
         public string Genus { get; set; }
@@ -33,11 +44,11 @@ namespace QuickType
         [JsonProperty("species")]
         public string Species { get; set; }
 
-        [JsonProperty("cultivar")]
-        public string Cultivar { get; set; }
+        [JsonProperty("address")]
+        public string Address { get; set; }
 
-        [JsonProperty("common")]
-        public string Common { get; set; }
+        [JsonProperty("notes")]
+        public string Notes { get; set; }
     }
 
     public partial class Welcome
@@ -61,36 +72,5 @@ namespace QuickType
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
             },
         };
-    }
-
-    internal class ParseStringConverter : JsonConverter
-    {
-        public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
-
-        public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null) return null;
-            var value = serializer.Deserialize<string>(reader);
-            long l;
-            if (Int64.TryParse(value, out l))
-            {
-                return l;
-            }
-            throw new Exception("Cannot unmarshal type long");
-        }
-
-        public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-        {
-            if (untypedValue == null)
-            {
-                serializer.Serialize(writer, null);
-                return;
-            }
-            var value = (long)untypedValue;
-            serializer.Serialize(writer, value.ToString());
-            return;
-        }
-
-        public static readonly ParseStringConverter Singleton = new ParseStringConverter();
     }
 }

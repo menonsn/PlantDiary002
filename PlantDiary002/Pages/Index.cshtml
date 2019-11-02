@@ -4,34 +4,36 @@
     ViewData["Title"] = "Home page";
     var name = ViewData["Myname"];
     var age = ViewData["age"];
-    List<QuickType.Plant> allPlants = ViewData["allPlants"];
+    List<QuickType.Specimen> allSpecimens = (List<QuickType.Specimen>)ViewData["allSpecimens"];
 }
 
-    <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-        <p>My name @name</p>
-        <p>My age @age</p>
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>My name @name</p>
+    <p>My age @age</p>
 
-        <table>
-            <tr>
-                <th>Latitudes</th>
-                <th>Longitudes</th>
-                <th>Address</th>
-                <th>Plant ID</th>
-                <th>Specimen</th>
-            </tr>
-            @{
-                @foreach (QuickType.Plant specimen in allspecimens)
-                {
-                    <tr>
-                        <td>@specimen.Lat</td>
-                        <td>@specimen.Lng</td>
-                        <td>@specimen.Genus @specimen.Speices @specimen.Common</td>
-                        <td> </td>
-                    </tr>
-                }
+    <table>
+        <tr>
+            <th>Latitudes</th>
+            <th>Longitudes</th>
+            <th>Address</th>
+            <th>Plant ID</th>
+            <th>Specimen ID</th>
+        </tr>
+        @{
+            @foreach (QuickType.Specimen specimen in allSpecimens)
+            {
+                <tr>
+                    <td>@specimen.Lat</td>
+                    <td>@specimen.Lng</td>
+                    <td>@specimen.Genus @specimen.Species @specimen.Common</td>
+                    <td>@specimen.PlantId</td>
+                    <td>@specimen.SpecimenId</td>
+                    <td> </td>
+                </tr>
             }
-        </table>
+        }
+    </table>
 
-    </div>
+</div>
